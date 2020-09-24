@@ -101,3 +101,8 @@ clickhouse_kafka_config: []
 clickhouse_kafka_topics_config: []
 
 clickhouse_merge_tree_config: []
+
+clickhouse_backup: true
+clickhouse_backup_schedule: daily  # annually | daily | hourly | monthly | reboot | weekly | yearly
+clickhouse_backup_remote_storage: s3
+clickhouse_backup_data_path: /var/lib/clickhouse

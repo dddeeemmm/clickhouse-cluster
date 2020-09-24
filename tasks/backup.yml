@@ -1,0 +1,42 @@
+---
+
+- name: download clickhouse-backup
+  unarchive:
+    src: https://github.com/AlexAkulov/clickhouse-backup/releases/download/v0.5.2/clickhouse-backup.tar.gz
+    dest: /tmp
+    remote_src: true
+
+- name: place binary
+  copy:
+    src: /tmp/clickhouse-backup/clickhouse-backup
+    dest: /usr/bin/clickhouse-backup
+    mode: +x
+    remote_src: true
+
+- name: make directory
+  file:
+    path: /etc/clickhouse-backup
+    state: directory
+    owner: clickhouse
+    group: clickhouse
+
+- name: place config
+  template:
+    src: backup.config.j2
+    dest: /etc/clickhouse-backup/config.yml
+    owner: clickhouse
+    group: clickhouse
+
+- name: place script
+  template:
+    src: backup.script.j2
+    dest: /etc/clickhouse-backup/backup.sh
+    owner: clickhouse
+    group: clickhouse
+    mode: +x
+
+- name: create cron job
+  cron:
+    name: clickhouse backup
+    job: /etc/clickhouse-backup/backup.sh
+    special_time: '{{ clickhouse_backup_schedule }}'
